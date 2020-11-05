@@ -6,6 +6,20 @@
 
 #define MAX_STR_LEN 1024
 
+char * strToArr(char * str)
+{
+	char * ptr;
+	char * delim = "  ";
+
+	ptr = strtok(str, delim);
+
+	while (ptr != NULL)
+	{
+		printf("%s\n", ptr);
+		ptr = strtok(NULL, delim);
+	}
+}
+
 int main(void)
 {
 	char str[MAX_STR_LEN];
