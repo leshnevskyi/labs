@@ -6,36 +6,24 @@
 #define MAX_STR_LEN 1024
 
 unsigned countWords(char * str);
+char ** substractWords(char * str);
+char * filterStr(char * str, char * substr);
 
 int main()
 {
-  char str[MAX_STR_LEN];
-  char * substr = "do";
-  char filteredStr[MAX_STR_LEN];
-
+  char str[MAX_STR_LEN], substr[MAX_STR_LEN];
+  char * filteredStr;
+  
+  puts("Enter a string: ");
   fgets(str, MAX_STR_LEN, stdin);
   
-  unsigned count = countWords(str);
+  puts("\nEnter a substring: ");
+  scanf("%s", substr);
   
-  const char * delim = " ";
-  char words[10][10];
-  char * tok = strtok(str, delim);
+  filteredStr = filterStr(str, substr);
   
-  for (int i = 0; tok != NULL; i++)
-  {
-    strcpy(words[i], tok);
-    tok = strtok(NULL, delim);
-  }
-  
-  for (int i = 0; i < 10; i++)
-  {
-    if (strstr(words[i], substr) == NULL)
-    {
-      strcat(filteredStr, strcat(words[i], " "));
-    }
-  }
-  
-  printf("%s\n", filteredStr);
+  printf("\nOriginal string: \n%s \n", str);
+  printf("Filtered string: \n%s \n", filteredStr);
 
   return 0;
 }
@@ -43,7 +31,7 @@ int main()
 unsigned countWords(char * str)
 {
   unsigned wordCount = 0;
-  unsigned isInWord = 0;
+  unsigned short isInWord = 0;
   char tok;
   
   while (* str)
@@ -61,4 +49,50 @@ unsigned countWords(char * str)
   }
   
   return wordCount;
+}
+
+char ** substractWords(char * str)
+{
+  char * strCpy;
+  char ** words, * tok;
+  const char * delim = "  ";
+  unsigned wordCount;
+  unsigned short wordLen;
+  
+  strCpy = malloc(strlen(str) * sizeof(char));
+  strcpy(strCpy, str);
+  wordCount = countWords(strCpy);
+  words = malloc(wordCount * sizeof(char *));
+  tok = strtok(strCpy, delim);
+  
+  for (short i = 0; tok != NULL; i++)
+  {
+    wordLen = (unsigned)strlen(tok);
+    words[i] = malloc(wordLen * sizeof(char));
+    strcpy(words[i], tok);
+    tok = strtok(NULL, delim);
+  }
+
+  return words;
+}
+
+char * filterStr(char * str, char * substr)
+{
+  char * filteredStr;
+  char ** words;
+  unsigned wordCount;
+  
+  filteredStr = malloc(strlen(str) * sizeof(char));
+  words = substractWords(str);
+  wordCount = countWords(str);
+  
+  for (int i = 0; i < wordCount; i++)
+  {
+    if (strstr(words[i], substr) == NULL)
+    {
+      strcat(filteredStr, strcat(words[i], " "));
+    }
+  }
+  
+  return filteredStr;
 }
