@@ -17,7 +17,7 @@ int main()
 
 	puts("Enter arguments x and y:");
 	scanf("%f %f", &x, &y);
-	puts("Enter a path to the binary file:");
+	puts("\nEnter a path to the binary file:");
 	scanf("%s", argsFilePath);
 
 	pArgsFile = fopen(argsFilePath, "wb");
@@ -31,7 +31,7 @@ int main()
 		argsFilePath, x, y, ctime(&t)
 	);
 
-	puts("Enter a path to the output file:");
+	puts("\nEnter a path to the output file:");
 	scanf("%s", outputFilePath);
 
 	pOutputFile = fopen(outputFilePath, "w");
@@ -67,6 +67,8 @@ int main()
 	);
 
 	fprintf(pOutputFile, "Result = %.2f", z);
+
+	puts("\nThe files have been sccessfully created.");
 
 	t = time(NULL);
 
