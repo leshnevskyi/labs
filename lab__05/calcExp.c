@@ -1,10 +1,10 @@
 #include <math.h>
 
-float calcExp(float x)
+double calcExp(float x)
 {
-  float y;
-  
-  y = sqrt(1 - cos(2 * x));
-  
+  double y;
+
+  y = sqrt(1 - cos(2.0 * x));
+
   return y;
 }
