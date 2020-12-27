@@ -16,11 +16,30 @@ typedef struct BookListNode
 	struct BookListNode * next;
 } BookListNode;
 
-void swapBookListNodes(
-	BookListNode * firstBookPtr, 
+int evalCondition(
+	BookListNode * bookListNodePtr
+);
+
+int compareBookAuthorNames(
+	BookListNode * firstBookPtr,
 	BookListNode * secondBookPtr
 );
-void sortBookList(BookListNode * bookListHeadPtr);
+
+void insertBookListNode(
+	BookListNode ** bookListHeadPtr,
+	BookListNode ** bookListNodePtr,
+	int (* compare)(
+		BookListNode * firstBookPtr,
+		BookListNode * secondBookPtr
+	)
+);
+
+void deleteBookListNode(
+	BookListNode ** bookListHeadPtr,
+	int (* evalCondition)(
+		BookListNode ** bookListNodePtr
+	)
+);
 
 int main()
 {
@@ -98,17 +117,13 @@ int main()
 			if (!strcmp(currField, "Price"))
 			{
 				currBookPtr->price = (float)atof(value);
-				currBookPtr->next = NULL;
 
-				if (bookListHeadPtr == NULL)
-				{
-					bookListHeadPtr = malloc(sizeof(BookListNode));
-					prevBookPtr = malloc(sizeof(BookListNode));
-					bookListHeadPtr = currBookPtr;
-				}
-				else prevBookPtr->next = currBookPtr;
+				insertBookListNode(
+					&bookListHeadPtr, 
+					&currBookPtr, 
+					compareBookAuthorNames
+				);
 
-				prevBookPtr = currBookPtr;
 				currBookPtr = malloc(sizeof(BookListNode));
 			}
 
@@ -130,19 +145,10 @@ int main()
 		buffIdx++;
 	}
 
+	deleteBookListNode(&bookListHeadPtr, evalCondition);
+
 	currBookPtr = bookListHeadPtr;
 
-	while (currBookPtr != NULL)
-	{
-		puts(currBookPtr->author);
-
-		currBookPtr = currBookPtr->next;
-	}
-
-	puts("\n");
-	currBookPtr = bookListHeadPtr;
-	sortBookList(bookListHeadPtr);
-	
 	while (currBookPtr != NULL)
 	{
 		puts(currBookPtr->author);
@@ -155,42 +161,124 @@ int main()
 	return 0;
 }
 
-void swapBookListNodes(
+int evalCondition(
+	BookListNode * bookListNodePtr
+)
+{
+	if (bookListNodePtr->pageCount < MAX_PAGE_COUNT)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
+int compareBookAuthorNames(
 	BookListNode * firstBookPtr,
 	BookListNode * secondBookPtr
 )
 {
-	BookListNode * tmpBookPtr = NULL;
-
-	tmpBookPtr = malloc(sizeof(BookListNode));
-	tmpBookPtr = firstBookPtr;
-	firstBookPtr = secondBookPtr;
-	secondBookPtr = tmpBookPtr;
+	return strcmp(
+		firstBookPtr->author, 
+		secondBookPtr->author
+	);
 }
 
-void sortBookList(BookListNode * bookListHeadPtr)
+void insertBookListNode(
+	BookListNode ** bookListHeadPtr,
+	BookListNode ** bookListNodePtr,
+	int (* compare)(
+		BookListNode * firstBookPtr,
+		BookListNode * secondBookPtr
+	)
+)
 {
+	(* bookListNodePtr)->next = NULL;
+
+	if (* bookListHeadPtr == NULL)
+	{
+		* bookListHeadPtr = malloc(sizeof(BookListNode));
+		* bookListHeadPtr = * bookListNodePtr;
+	}
+	else if (compare(* bookListHeadPtr, * bookListNodePtr) < 0)
+	{
+		(* bookListNodePtr)->next = * bookListHeadPtr;
+		* bookListHeadPtr = * bookListNodePtr;
+	}
+	else
+	{
+		BookListNode * currBookPtr = NULL;
+
+		currBookPtr = malloc(sizeof(BookListNode));
+		currBookPtr = * bookListHeadPtr;
+
+		while (currBookPtr != NULL)
+		{
+			if (currBookPtr->next != NULL)
+			{
+				if (
+					compare(currBookPtr, * bookListNodePtr) >= 0
+					&& compare(currBookPtr->next, * bookListNodePtr) < 0
+				)
+				{
+					(* bookListNodePtr)->next = currBookPtr->next;
+					currBookPtr->next = * bookListNodePtr;
+
+					break;
+				}
+			}
+			else
+			{
+				currBookPtr->next = * bookListNodePtr;
+
+				break;
+			}
+
+			currBookPtr = currBookPtr->next;
+		}
+	}
+}
+
+void deleteBookListNode(
+	BookListNode ** bookListHeadPtr,
+	int (* evalCondition)(
+		BookListNode * bookListNodePtr
+	)
+)
+{
+	BookListNode * prevBookPtr = NULL;
 	BookListNode * currBookPtr = NULL;
-	int res;
 
 	currBookPtr = malloc(sizeof(BookListNode));
-	currBookPtr = bookListHeadPtr;
+	currBookPtr = * bookListHeadPtr;
 
-	while (currBookPtr->next != NULL)
+	while (currBookPtr != NULL)
 	{
-		int res = strcmp(
-			currBookPtr->author, 
-			currBookPtr->next->author
-		);
-		
-		if (res < 0)
+		if (evalCondition(currBookPtr))
 		{
-			swapBookListNodes(
-				currBookPtr, 
-				currBookPtr->next
-			);
+			if (prevBookPtr == NULL)
+			{
+				* bookListHeadPtr = currBookPtr->next;
+
+				currBookPtr = * bookListHeadPtr;
+			}
+			else
+			{
+				prevBookPtr->next = currBookPtr->next;
+			}
 		}
 
+		if (prevBookPtr == NULL)
+		{
+			prevBookPtr = malloc(sizeof(BookListNode));
+		}
+
+		prevBookPtr = currBookPtr;
 		currBookPtr = currBookPtr->next;
 	}
+
+	free(prevBookPtr);
+	free(currBookPtr);
+	prevBookPtr = NULL;
+	currBookPtr = NULL;
 }
