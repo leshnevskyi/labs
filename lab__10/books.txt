@@ -1,0 +1,47 @@
+Author: Marijn Haverbeke;
+Title: Eloquent JavaScript, Second Edition;
+Year: 2014;
+Pages: 472;
+Price: 23.99;
+
+Author: Addy Osmani;
+Title: Learning JavaScript Design Patterns;
+Year: 2012;
+Pages: 254;
+Price: 25.99;
+
+Author: Axel Rauschmayer;
+Title: Speaking JavaScript;
+Year: 2014;
+Pages: 460;
+Price: 24.99;
+
+Author: Eric Elliott;
+Title: Programming JavaScript Applications;
+Year: 2014;
+Pages: 254;
+Price: 39.99; 
+
+Author: Nicholas C. Zakas;
+Title: Understanding ECMAScript 6;
+Year: 2016;
+Pages: 352;
+Price: 20.99; 
+
+Author: Kyle Simpson;
+Title: You Don't Know JS;
+Year: 2015;
+Pages: 278;
+Price: 24.99;
+
+Author: Richard E. Silverman;
+Title: Git Pocket Guide;
+Year: 2013;
+Pages: 234;
+Price: 13.49;
+
+Author: Glenn Block;
+Title: Designing Evolvable Web APIs with ASP.NET;
+Year: 2014;
+Pages: 538;
+Price: 34.15;  
